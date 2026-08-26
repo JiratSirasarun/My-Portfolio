@@ -1,17 +1,20 @@
 # Big C PLUS — SPayLater Checkout Prototype
 
-A single-file, click-through React prototype adding **Shopee PayLater (SPayLater)**
-as a payment method in the Big C PLUS "Order Summary" checkout flow, including
+A click-through prototype in plain **HTML, CSS, and JavaScript** (no
+frameworks, no build step) adding **Shopee PayLater (SPayLater)** as a
+payment method in the Big C PLUS "Order Summary" checkout flow, including
 0% installment tiers and a payment-failure/retry path.
+
+## Files
+
+- `index.html` — page shell
+- `style.css` — all styling
+- `script.js` — app state, screen rendering, and event handling
 
 ## Run it
 
-No build step, install, or network access required — `index.html` is fully
-self-contained. React and ReactDOM are vendored inline and the app code is
-pre-compiled from JSX to plain JS, so it works offline and behind restrictive
-proxies/firewalls.
-
-Just double-click `index.html` to open it directly in a browser, or serve it:
+No build step, install, or network access required. Just double-click
+`index.html` to open it in a browser, or serve the folder:
 
 ```bash
 # from this folder
@@ -46,25 +49,21 @@ part of the simulated app UI.
 ## Editing installment thresholds
 
 All installment-tier data lives in one config array at the top of
-`index.html`:
+`script.js`:
 
 ```js
-const installmentPlans = [
+var installmentPlans = [
   { months: 3, minPurchase: null, isDefault: true },
   { months: 6, minPurchase: null, isDefault: false },
   { months: 10, minPurchase: null, isDefault: false },
-  { months: 12, minPurchase: null, isDefault: false },
+  { months: 12, minPurchase: null, isDefault: false }
 ];
 ```
 
 `minPurchase: null` renders as the placeholder "min. purchase ฿XXX". Once the
 business team confirms real baht thresholds, replace `null` with the number
-(e.g. `minPurchase: 500`) and the UI renders it automatically — no layout
-changes needed.
-
-This config block sits near the top of the compiled `<script>` in
-`index.html`, before any component code, so it can be edited directly without
-touching JSX/build tooling.
+(e.g. `minPurchase: 500`) and the UI renders it automatically — no other code
+needs to change.
 
 ## Branding scope
 
@@ -73,3 +72,15 @@ order summary, success, failure). Shopee orange (`#EE4D2D`) is reserved
 strictly for the Shopee-branded redirect screen (header + banner + Confirm
 button) to signal the external handoff. The failure screen uses a semantic
 error red, not Shopee's orange, since it is still a Big C PLUS-native screen.
+
+## Implementation notes
+
+State lives in one `state` object in `script.js`; `setState()` merges a
+patch and re-renders the whole phone frame from template strings. Clicks are
+handled through a single delegated listener (`data-action` attributes), so
+no per-button listeners need to be re-attached after a re-render. The payer
+name/email inputs on the Shopee screen are deliberately **not** wired to
+`setState` on every keystroke — that would rebuild the DOM mid-typing and
+kick focus out of the field. Their values are read straight from the DOM
+when "Confirm" is pressed, then copied into `state` so a "Pay again" retry
+reopens the screen with what was already typed.
