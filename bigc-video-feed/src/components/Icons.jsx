@@ -70,3 +70,60 @@ export const PlayIcon = (p) => (
     <path d="M8 5.5v13l11-6.5z" />
   </svg>
 );
+
+const tab = { ...base, width: 24, height: 24, fill: 'none', stroke: 'currentColor' };
+
+export const HomeIcon = (p) => (
+  <svg {...tab} {...p}>
+    <path d="M3.5 10.5 12 3.5l8.5 7V20a1 1 0 0 1-1 1h-5v-6h-5v6h-5a1 1 0 0 1-1-1z" />
+  </svg>
+);
+
+export const GridIcon = (p) => (
+  <svg {...tab} {...p}>
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+  </svg>
+);
+
+export const VideoTabIcon = ({ filled, ...p }) => (
+  <svg {...tab} {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="4" fill={filled ? 'currentColor' : 'none'} />
+    <path d="M10 9v6l5-3z" fill={filled ? '#000' : 'currentColor'} stroke="none" />
+  </svg>
+);
+
+export const UserIcon = (p) => (
+  <svg {...tab} {...p}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20.5c1.2-4 4.3-6 8-6s6.8 2 8 6" />
+  </svg>
+);
+
+export const SearchIcon = (p) => (
+  <svg {...tab} {...p}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="m20 20-4.3-4.3" />
+  </svg>
+);
+
+export const VolumeIcon = ({ muted, ...p }) => (
+  <svg {...tab} width={20} height={20} {...p}>
+    <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" />
+    {muted ? <path d="m16 9.5 5 5m0-5-5 5" /> : <path d="M16 9a4.5 4.5 0 0 1 0 6m2.5-8.5a8 8 0 0 1 0 11" />}
+  </svg>
+);
+
+export const PlusIcon = (p) => (
+  <svg {...tab} width={12} height={12} strokeWidth={3.5} {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const CheckIcon = (p) => (
+  <svg {...tab} width={12} height={12} strokeWidth={3.5} {...p}>
+    <path d="m5 12.5 4.5 4.5L19 7.5" />
+  </svg>
+);

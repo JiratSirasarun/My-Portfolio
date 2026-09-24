@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { formatCount } from '../format.js';
-import { BookmarkIcon, CommentIcon, HeartIcon, ShareIcon } from './Icons.jsx';
+import { BookmarkIcon, CheckIcon, CommentIcon, HeartIcon, PlusIcon, ShareIcon } from './Icons.jsx';
 
 function RailButton({ label, count, active, onClick, children }) {
   // `pop` replays a short bounce every time the button is tapped.
@@ -28,9 +28,30 @@ function RailButton({ label, count, active, onClick, children }) {
 //   Like / Save  -> toggled, filled brand green
 //   Comment      -> filled green once you've commented on this video
 //   Share        -> filled green once you've shared this video
-export default function ActionRail({ item, onLike, onSave, onOpenComments, onOpenShare }) {
+export default function ActionRail({ item, onLike, onSave, onOpenComments, onOpenShare, onToggleFollow }) {
+  const initials = item.creatorName
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
+
   return (
     <div className="action-rail">
+      <div className="rail-creator">
+        <span className="creator-avatar" style={{ background: item.creatorColor }} aria-hidden="true">
+          {initials}
+        </span>
+        <button
+          type="button"
+          className={`follow-badge${item.isFollowing ? ' following' : ''}`}
+          aria-label={item.isFollowing ? `Unfollow ${item.creatorName}` : `Follow ${item.creatorName}`}
+          aria-pressed={item.isFollowing}
+          onClick={onToggleFollow}
+        >
+          {item.isFollowing ? <CheckIcon /> : <PlusIcon />}
+        </button>
+      </div>
       <RailButton label={item.isLiked ? 'Unlike' : 'Like'} count={item.likeCount} active={item.isLiked} onClick={onLike}>
         <HeartIcon filled={item.isLiked} />
       </RailButton>

@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import FeedItem from './FeedItem.jsx';
-import { ChevronIcon } from './Icons.jsx';
+import { ChevronIcon, SearchIcon, VolumeIcon } from './Icons.jsx';
 
 // Vertical, full-screen, scroll-snapping feed. Swipe/scroll, the up/down
 // buttons, or the keyboard arrows all move one video at a time.
@@ -14,8 +14,11 @@ export default function VideoFeedScreen({
   onOpenComments,
   onOpenShare,
   onOpenProduct,
+  onToggleFollow,
+  onToast,
 }) {
   const scrollerRef = useRef(null);
+  const [muted, setMuted] = useState(false);
 
   // Restore position when coming back from the product detail screen.
   useLayoutEffect(() => {
@@ -56,10 +59,20 @@ export default function VideoFeedScreen({
           <span className="feed-tab">Following</span>
           <span className="feed-tab active">For You</span>
         </nav>
-        <span className="feed-position">
-          {activeIndex + 1}/{items.length}
-        </span>
+        <button type="button" className="header-btn" aria-label="Search videos" onClick={() => onToast('Search is not part of this prototype')}>
+          <SearchIcon />
+        </button>
       </header>
+
+      <button
+        type="button"
+        className="mute-btn"
+        aria-label={muted ? 'Unmute' : 'Mute'}
+        aria-pressed={muted}
+        onClick={() => setMuted((m) => !m)}
+      >
+        <VolumeIcon muted={muted} />
+      </button>
 
       <div
         ref={scrollerRef}
@@ -76,6 +89,7 @@ export default function VideoFeedScreen({
             onOpenComments={() => onOpenComments(item.id)}
             onOpenShare={() => onOpenShare(item.id)}
             onOpenProduct={() => onOpenProduct(item.productId)}
+            onToggleFollow={() => onToggleFollow(item.creatorName)}
           />
         ))}
       </div>

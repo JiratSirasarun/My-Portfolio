@@ -35,6 +35,7 @@ export default function ProductDetailScreen({ product, cartCount, onBack, onAddT
             {product.originalPrice && <span className="pdp-original">{formatBaht(product.originalPrice)}</span>}
           </div>
           <h1 className="pdp-name">{product.productName}</h1>
+          {product.productNameTh && <p className="pdp-name-th">{product.productNameTh}</p>}
           <span className="pdp-unit">{product.unit}</span>
         </div>
 

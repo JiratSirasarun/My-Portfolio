@@ -4,13 +4,15 @@
 // coupon text is hard-coded in the components themselves.
 // =============================================================================
 import { mockProductImage } from './placeholderImage.js';
+import vaselinePeachImg from '../assets/vaseline-peach-lotion-1plus1.png';
 
 /**
  * PRODUCTS — one entry per shoppable product/coupon pair.
  * {
  *   id:            string   unique product id (referenced by FEED_ITEMS.productId)
  *   productName:   string   full product name (card truncates with ellipsis)
- *   productImage:  string   image URL (placeholder SVG data URI for now)
+ *   productNameTh: string?  Thai name shown under the English name on the PDP
+ *   productImage:  string   image URL (real packshot or placeholder SVG data URI)
  *   price:         number   selling price in THB
  *   originalPrice: number?  crossed-out price (optional)
  *   unit:          string   pack size shown on PDP
@@ -22,16 +24,18 @@ import { mockProductImage } from './placeholderImage.js';
 export const PRODUCTS = [
   {
     id: 'p-vaseline',
-    productName: 'Vaseline Healthy Bright Superfood Freshlock Body Serum',
-    productImage: mockProductImage({ bg: '#FFF4E0', body: '#F29F05', cap: '#1E4D8C', label: 'Vaseline', shape: 'bottle' }),
+    productName: 'Vaseline Healthy Bright Superfood Freshlock Peach Lotion 300 ml Pack 1+1',
+    productNameTh: 'วาสลีน เฮลตี้ ไบรท์ ซูเปอร์ฟู้ด เฟรชล็อก พีช โลชั่น 300 มล. แพ็ค 1+1',
+    productImage: vaselinePeachImg,
+    // Mock price: replace with the live Big C price.
     price: 259,
     originalPrice: 329,
-    unit: '300 ml',
+    unit: '300 ml × 2',
     couponText: 'Unilever: Buy ฿499, get ฿45 off',
     couponMinSpend: 499,
     couponDiscount: 45,
     description:
-      'Lightweight body serum with superfood extracts and Freshlock technology for brighter, hydrated skin that stays fresh all day.',
+      'Lightweight peach body lotion with superfood extracts and Freshlock technology for brighter, hydrated skin that stays fresh all day. Value twin pack (1+1).',
   },
   {
     id: 'p-sunsilk',
@@ -64,9 +68,11 @@ export const PRODUCTS = [
  *   id:              string
  *   productId:       string   links to PRODUCTS[].id (product/coupon card + PDP)
  *   creatorName:     string   seller / creator display name
+ *   creatorColor:    string   avatar background (stand-in for a profile photo)
  *   caption:         string   long captions are truncated with "...more"
- *   videoBackground: string   CSS background standing in for the video frame
+ *   videoBackground: string   CSS background tint behind the mocked video
  *                             (swap for a <video src> later)
+ *   durationSec:     number   length of the mock clip (drives the progress bar)
  *   likeCount, commentCount, saveCount, shareCount: numbers
  *   comments:        { user, text, time, likes }[]  mock comment list
  * }
@@ -74,10 +80,12 @@ export const PRODUCTS = [
 export const FEED_ITEMS = [
   {
     id: 'v1',
+    creatorColor: '#E86A8E',
+    durationSec: 15,
     productId: 'p-vaseline',
     creatorName: 'Big C Beauty Official',
     caption:
-      'Glow check ✨ 7 days with the new Vaseline Healthy Bright Superfood Freshlock serum. Absorbs in seconds, no sticky feel even in Bangkok heat! Grab the Unilever coupon before it runs out #BigCPLUS #glowup #bodycare',
+      'Glow check ✨ 7 days with the new Vaseline Healthy Bright Superfood Freshlock Peach lotion 🍑 Absorbs in seconds, no sticky feel even in Bangkok heat! Grab the Unilever coupon before it runs out #BigCPLUS #glowup #bodycare',
     videoBackground: 'linear-gradient(160deg, #F6D365 0%, #FDA085 50%, #F07B6B 100%)',
     likeCount: 8742,
     commentCount: 1203,
@@ -92,6 +100,8 @@ export const FEED_ITEMS = [
   },
   {
     id: 'v2',
+    creatorColor: '#8E6CCF',
+    durationSec: 22,
     productId: 'p-sunsilk',
     creatorName: 'HairByFah',
     caption: 'Frizz-free in 1 wash? Testing Sunsilk Smooth & Manageable on my humid-day hair 💁‍♀️',
@@ -107,6 +117,8 @@ export const FEED_ITEMS = [
   },
   {
     id: 'v3',
+    creatorColor: '#4E8A1E',
+    durationSec: 18,
     productId: 'p-crispy',
     creatorName: 'Big C Snack Lab',
     caption:
@@ -125,9 +137,11 @@ export const FEED_ITEMS = [
   },
   {
     id: 'v4',
+    creatorColor: '#2C4A6E',
+    durationSec: 12,
     productId: 'p-vaseline',
     creatorName: 'SkinDiaryTH',
-    caption: 'Night routine, body edition 🌙 Serum first, then sleep. That is it.',
+    caption: 'Night routine, body edition 🌙 Peach lotion, then sleep. That is it. The 1+1 pack lasts me two months #BigCPLUS',
     videoBackground: 'linear-gradient(170deg, #243B55 0%, #141E30 100%)',
     likeCount: 3402,
     commentCount: 98,

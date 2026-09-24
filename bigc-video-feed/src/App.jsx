@@ -4,6 +4,8 @@ import VideoFeedScreen from './components/VideoFeedScreen.jsx';
 import ProductDetailScreen from './components/ProductDetailScreen.jsx';
 import CommentSheet from './components/CommentSheet.jsx';
 import ShareSheet from './components/ShareSheet.jsx';
+import StatusBar from './components/StatusBar.jsx';
+import BottomNav from './components/BottomNav.jsx';
 
 // Top-level: owns the active feed index, per-item engagement state, which
 // sheet is open, and which screen (feed vs. product detail) is shown.
@@ -16,6 +18,7 @@ export default function App() {
   const [saved, setSaved] = useState({});
   const [shared, setShared] = useState({});
   const [userComments, setUserComments] = useState({}); // { [itemId]: comment[] }
+  const [following, setFollowing] = useState({}); // { [creatorName]: bool }
 
   // Sheets: only one open at a time, tied to the item it was opened from.
   const [commentSheetItemId, setCommentSheetItemId] = useState(null);
@@ -44,6 +47,7 @@ export default function App() {
       isSaved: !!saved[item.id],
       isShared: !!shared[item.id],
       hasCommented: extra.length > 0,
+      isFollowing: !!following[item.creatorName],
       likeCount: item.likeCount + (liked[item.id] ? 1 : 0),
       saveCount: item.saveCount + (saved[item.id] ? 1 : 0),
       shareCount: item.shareCount + (shared[item.id] ? 1 : 0),
@@ -68,48 +72,59 @@ export default function App() {
     showToast(platform === 'Copy link' ? 'Link copied (mock)' : `Shared to ${platform} (mock)`);
   };
 
-  if (screen.name === 'pdp') {
-    return (
-      <div className="phone">
-        <ProductDetailScreen
-          product={getProduct(screen.productId)}
-          cartCount={cartCount}
-          onBack={() => setScreen({ name: 'feed' })}
-          onAddToCart={(qty) => {
-            setCartCount((c) => c + qty);
-            showToast(`Added ${qty} to cart`);
-          }}
-          onToast={showToast}
-        />
-        {toast && <div className="toast">{toast}</div>}
-      </div>
-    );
-  }
+  const handleToggleFollow = (creatorName) => {
+    const next = !following[creatorName];
+    setFollowing((s) => ({ ...s, [creatorName]: next }));
+    showToast(next ? `Following ${creatorName}` : `Unfollowed ${creatorName}`);
+  };
+
+  const isPdp = screen.name === 'pdp';
 
   return (
     <div className="phone">
-      <VideoFeedScreen
-        items={items}
-        activeIndex={activeIndex}
-        onActiveIndexChange={setActiveIndex}
-        scrollLocked={!!(commentItem || shareItem)}
-        onLike={toggle(setLiked)}
-        onSave={toggle(setSaved)}
-        onOpenComments={setCommentSheetItemId}
-        onOpenShare={setShareSheetItemId}
-        onOpenProduct={(productId) => setScreen({ name: 'pdp', productId })}
-      />
-      <CommentSheet
-        item={commentItem}
-        onClose={() => setCommentSheetItemId(null)}
-        onPost={(text) => handlePostComment(commentItem.id, text)}
-      />
-      <ShareSheet
-        item={shareItem}
-        onClose={() => setShareSheetItemId(null)}
-        onShare={(platform) => handleShare(shareItem.id, platform)}
-      />
-      {toast && <div className="toast">{toast}</div>}
+      <StatusBar tone={isPdp ? 'brand' : 'dark'} />
+      <div className="phone-body">
+        {isPdp ? (
+          <ProductDetailScreen
+            product={getProduct(screen.productId)}
+            cartCount={cartCount}
+            onBack={() => setScreen({ name: 'feed' })}
+            onAddToCart={(qty) => {
+              setCartCount((c) => c + qty);
+              showToast(`Added ${qty} to cart`);
+            }}
+            onToast={showToast}
+          />
+        ) : (
+          <>
+            <VideoFeedScreen
+              items={items}
+              activeIndex={activeIndex}
+              onActiveIndexChange={setActiveIndex}
+              scrollLocked={!!(commentItem || shareItem)}
+              onLike={toggle(setLiked)}
+              onSave={toggle(setSaved)}
+              onOpenComments={setCommentSheetItemId}
+              onOpenShare={setShareSheetItemId}
+              onOpenProduct={(productId) => setScreen({ name: 'pdp', productId })}
+              onToggleFollow={handleToggleFollow}
+              onToast={showToast}
+            />
+            <BottomNav cartCount={cartCount} onUnavailable={(tab) => showToast(`${tab} is not part of this prototype`)} />
+            <CommentSheet
+              item={commentItem}
+              onClose={() => setCommentSheetItemId(null)}
+              onPost={(text) => handlePostComment(commentItem.id, text)}
+            />
+            <ShareSheet
+              item={shareItem}
+              onClose={() => setShareSheetItemId(null)}
+              onShare={(platform) => handleShare(shareItem.id, platform)}
+            />
+          </>
+        )}
+        {toast && <div className="toast">{toast}</div>}
+      </div>
     </div>
   );
 }
